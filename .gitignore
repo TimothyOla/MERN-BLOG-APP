@@ -1,0 +1,14 @@
+node_modules
+.env
+dist
+*.log
+
+# Terraform
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+infra/terraform/.terraform.lock.hcl
+infra/terraform/terraform.tfvars
+
+# Kubernetes secrets (never commit real credentials)
+infra/k8s/secrets.yaml

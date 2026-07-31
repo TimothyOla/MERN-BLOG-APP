@@ -1,0 +1,4 @@
+aws_region      = "us-east-1"
+project_name    = "marginalia"
+environment     = "production"
+cluster_version = "1.30"

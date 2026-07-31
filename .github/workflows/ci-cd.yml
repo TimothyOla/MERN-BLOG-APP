@@ -1,0 +1,90 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_BACKEND_REPO: marginalia-backend
+  ECR_FRONTEND_REPO: marginalia-frontend
+  EKS_CLUSTER_NAME: marginalia
+  K8S_NAMESPACE: marginalia
+
+permissions:
+  id-token: write   # required for AWS OIDC login
+  contents: read
+
+jobs:
+  # ---------- Runs on every push and PR ----------
+  test:
+    name: Lint & sanity checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install backend deps
+        working-directory: backend
+        run: npm install
+
+      - name: Install frontend deps
+        working-directory: frontend
+        run: npm install
+
+      - name: Build frontend (catches build-time errors)
+        working-directory: frontend
+        run: npm run build
+
+  # ---------- Only runs on pushes to main ----------
+  build-and-deploy:
+    name: Build, push, and deploy
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build & push backend image
+        working-directory: backend
+        run: |
+          IMAGE="${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_BACKEND_REPO }}:${{ github.sha }}"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "BACKEND_IMAGE=$IMAGE" >> "$GITHUB_ENV"
+
+      - name: Build & push frontend image
+        working-directory: frontend
+        run: |
+          IMAGE="${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_FRONTEND_REPO }}:${{ github.sha }}"
+          docker build -f Dockerfile.prod \
+            --build-arg VITE_API_URL="${{ vars.VITE_API_URL }}" \
+            -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "FRONTEND_IMAGE=$IMAGE" >> "$GITHUB_ENV"
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER_NAME }}
+
+      - name: Deploy to EKS
+        run: |
+          kubectl set image deployment/backend backend="$BACKEND_IMAGE" -n ${{ env.K8S_NAMESPACE }}
+          kubectl set image deployment/frontend frontend="$FRONTEND_IMAGE" -n ${{ env.K8S_NAMESPACE }}
+          kubectl rollout status deployment/backend -n ${{ env.K8S_NAMESPACE }} --timeout=120s
+          kubectl rollout status deployment/frontend -n ${{ env.K8S_NAMESPACE }} --timeout=120s

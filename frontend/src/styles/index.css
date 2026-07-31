@@ -1,0 +1,393 @@
+:root {
+  --bg: #17131a;
+  --bg-raised: #1e1822;
+  --surface: #f4ecda;
+  --surface-edge: #e6d9b8;
+  --ink: #241d17;
+  --ink-soft: #4a4032;
+  --ink-light: #ece4d4;
+  --muted-on-dark: #a89e8e;
+  --border: #ddd0ab;
+  --accent: #c79a4b;
+  --accent-hover: #b3873a;
+  --accent-soft: #e4c98a;
+  --danger: #a8503b;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-read: "Lora", Georgia, serif;
+  --font-ui: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Navbar: the desk lamp above the page ---------- */
+.navbar {
+  background: var(--bg-raised);
+  border-bottom: 1px solid rgba(199, 154, 75, 0.35);
+}
+
+.navbar-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink-light);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--accent-soft), var(--accent) 60%, var(--accent-hover) 100%);
+  box-shadow: 0 0 0 1px rgba(199, 154, 75, 0.4);
+}
+
+.brand span {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 0.88rem;
+}
+
+.nav-links a,
+.nav-links button {
+  color: var(--muted-on-dark);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+}
+
+.nav-links a:hover,
+.nav-links button:hover {
+  color: var(--accent-soft);
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 3px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #201709;
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent-hover);
+}
+
+.btn-outline:hover {
+  background: var(--accent);
+  color: #201709;
+}
+
+.btn-danger {
+  border: 1px solid var(--danger);
+  background: transparent;
+  color: var(--danger);
+}
+
+.btn-danger:hover {
+  background: var(--danger);
+  color: #fbe9e3;
+}
+
+/* ---------- Page: the desk; Container: the paper on it ---------- */
+.page {
+  padding: 56px 20px 96px;
+}
+
+.container {
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--surface-edge);
+  border-radius: 2px;
+  padding: 52px 56px 60px;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.15),
+    0 18px 40px -18px rgba(0, 0, 0, 0.65),
+    0 2px 0 var(--surface-edge);
+}
+
+/* the ribbon bookmark tab, tucked into the top of the page */
+.container::before {
+  content: "";
+  position: absolute;
+  top: -16px;
+  left: 48px;
+  width: 26px;
+  height: 46px;
+  background: linear-gradient(180deg, var(--accent-soft), var(--accent-hover));
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.page-header {
+  margin-bottom: 40px;
+}
+
+.page-header .eyebrow {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-hover);
+  margin-bottom: 10px;
+}
+
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+
+.page-header p {
+  color: var(--ink-soft);
+  margin: 0;
+  font-family: var(--font-read);
+  font-style: italic;
+}
+
+/* ---------- Post card ---------- */
+.post-card {
+  position: relative;
+  padding: 26px 0 26px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.post-card:first-child {
+  padding-top: 0;
+}
+
+.post-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 30px;
+  width: 10px;
+  height: 10px;
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(45deg);
+  opacity: 0.85;
+}
+
+.post-card:first-child::before {
+  top: 4px;
+}
+
+.post-card h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.post-card h2 a:hover {
+  color: var(--accent-hover);
+}
+
+.post-meta {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.75;
+  margin-bottom: 10px;
+}
+
+.post-excerpt {
+  font-family: var(--font-read);
+  color: var(--ink);
+  margin: 0;
+}
+
+.empty-state {
+  padding: 50px 0;
+  text-align: center;
+  font-family: var(--font-read);
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+/* ---------- Single post ---------- */
+.post-detail h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.15rem;
+  margin: 0 0 12px;
+  line-height: 1.18;
+}
+
+.post-body {
+  white-space: pre-wrap;
+  margin-top: 30px;
+  font-family: var(--font-read);
+  font-size: 1.08rem;
+  color: var(--ink);
+}
+
+.post-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- Forms ---------- */
+.form-card {
+  max-width: none;
+}
+
+.form-card h1 {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 600;
+  margin: 0 0 26px;
+}
+
+.field {
+  margin-bottom: 18px;
+}
+
+.field label {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 7px;
+  color: var(--ink-soft);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-family: var(--font-read);
+  font-size: 1rem;
+  background: #fffdf7;
+  color: var(--ink);
+}
+
+.field textarea {
+  min-height: 280px;
+  resize: vertical;
+  line-height: 1.65;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.form-footer {
+  margin-top: 20px;
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.form-footer a {
+  color: var(--accent-hover);
+  font-weight: 600;
+}
+
+.error-banner {
+  background: #f6e2da;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 11px 14px;
+  border-radius: 2px;
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+  font-family: var(--font-ui);
+}
+
+.loading {
+  color: var(--muted-on-dark);
+  padding: 60px 0;
+  text-align: center;
+  font-family: var(--font-read);
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 40px 24px 44px;
+  }
+}
