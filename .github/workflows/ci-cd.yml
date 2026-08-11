@@ -14,11 +14,11 @@ env:
   K8S_NAMESPACE: marginalia
 
 permissions:
-  id-token: write   # required for AWS OIDC login
+  id-token: write   
   contents: read
 
 jobs:
-  # ---------- Runs on every push and PR ----------
+
   test:
     name: Lint & sanity checks
     runs-on: ubuntu-latest
@@ -42,7 +42,6 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-  # ---------- Only runs on pushes to main ----------
   build-and-deploy:
     name: Build, push, and deploy
     needs: test
